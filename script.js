@@ -1,195 +1,278 @@
-/* ============================================================
-   PUMA DRAGON EDITION — script.js
-   Modal logic, form validation, Meta Pixel events,
-   WhatsApp redirect
-   ============================================================ */
+/**
+ * PUMA DRAGON EDITION — script.js
+ * Modal logic, form validation, Meta Pixel events, WhatsApp redirect.
+ * Refactored to follow Clean Code principles using ES6 classes.
+ */
 
-(function () {
-  'use strict';
+class PumaLandingApp {
+  constructor() {
+    this.config = {
+      waNumber: '584XXXXXXXXX', // ← Reemplaza con tu número (código país sin +)
+      sizes: [35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45]
+    };
 
-  // ─── CONFIG ────────────────────────────────────────────────
-  const WA_NUMBER = '584XXXXXXXXX'; // ← Reemplaza con tu número (código país sin +)
-  const SIZES     = [35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45];
+    this.elements = {
+      btnQuiero: document.getElementById('btn-quiero'),
+      modalOverlay: document.getElementById('modal-overlay'),
+      modalClose: document.getElementById('modal-close'),
+      leadForm: document.getElementById('lead-form'),
+      formState: document.getElementById('form-state'),
+      successState: document.getElementById('success-state'),
+      sizesGrid: document.getElementById('sizes-grid'),
+      btnSubmit: document.getElementById('btn-submit'),
+      tallaInput: document.getElementById('talla'),
+      nombreInput: document.getElementById('nombre'),
+      whatsappInput: document.getElementById('whatsapp')
+    };
 
-  // ─── ELEMENTS ──────────────────────────────────────────────
-  const btnQuiero    = document.getElementById('btn-quiero');
-  const modalOverlay = document.getElementById('modal-overlay');
-  const modalClose   = document.getElementById('modal-close');
-  const leadForm     = document.getElementById('lead-form');
-  const formState    = document.getElementById('form-state');
-  const successState = document.getElementById('success-state');
-  const sizesGrid    = document.getElementById('sizes-grid');
-  const btnSubmit    = document.getElementById('btn-submit');
+    this.init();
+  }
 
-  // ─── BUILD SIZE BUTTONS ─────────────────────────────────────
-  SIZES.forEach(function (size) {
-    const btn = document.createElement('button');
-    btn.type        = 'button';
-    btn.className   = 'size-btn';
-    btn.textContent = size;
-    btn.dataset.size = size;
-    btn.setAttribute('aria-label', 'Talla ' + size);
-    btn.addEventListener('click', function () { selectSize(size, btn); });
-    sizesGrid.appendChild(btn);
-  });
+  /**
+   * Initializes the application.
+   */
+  init() {
+    this.buildSizeButtons();
+    this.bindEvents();
+  }
 
-  function selectSize(size, btn) {
-    document.querySelectorAll('.size-btn').forEach(function (b) {
+  /**
+   * Binds all DOM events to their respective handlers.
+   */
+  bindEvents() {
+    const { btnQuiero, modalClose, modalOverlay, leadForm, nombreInput, whatsappInput } = this.elements;
+
+    btnQuiero?.addEventListener('click', () => this.openModal());
+    modalClose?.addEventListener('click', () => this.closeModal());
+    
+    // Close on overlay click (outside modal card)
+    modalOverlay?.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) this.closeModal();
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modalOverlay.hidden) this.closeModal();
+    });
+
+    // Form submission
+    leadForm?.addEventListener('submit', (e) => this.handleSubmit(e));
+
+    // Clear errors on input
+    nombreInput?.addEventListener('input', () => this.clearError('nombre'));
+    whatsappInput?.addEventListener('input', () => this.clearError('whatsapp'));
+    
+    document.querySelectorAll('input[name="delivery"]').forEach(radio => {
+      radio.addEventListener('change', () => this.clearError('delivery'));
+    });
+  }
+
+  /**
+   * Dynamically builds the size selection grid.
+   */
+  buildSizeButtons() {
+    if (!this.elements.sizesGrid) return;
+    
+    this.config.sizes.forEach(size => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'size-btn';
+      btn.textContent = size;
+      btn.dataset.size = size;
+      btn.setAttribute('aria-label', `Talla ${size}`);
+      
+      btn.addEventListener('click', () => this.selectSize(size, btn));
+      this.elements.sizesGrid.appendChild(btn);
+    });
+  }
+
+  /**
+   * Handles size selection logic.
+   * @param {number} size - The selected shoe size.
+   * @param {HTMLElement} btn - The button element that was clicked.
+   */
+  selectSize(size, btn) {
+    document.querySelectorAll('.size-btn').forEach(b => {
       b.classList.remove('active');
       b.setAttribute('aria-pressed', 'false');
     });
+    
     btn.classList.add('active');
     btn.setAttribute('aria-pressed', 'true');
-    document.getElementById('talla').value = size;
-    clearError('talla');
+    this.elements.tallaInput.value = size;
+    
+    this.clearError('talla');
   }
 
-  // ─── OPEN MODAL ────────────────────────────────────────────
-  function openModal() {
+  /**
+   * Opens the lead capture modal and tracks the event.
+   */
+  openModal() {
+    const { modalOverlay, leadForm } = this.elements;
+    
     modalOverlay.hidden = false;
     modalOverlay.classList.add('entering');
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
 
-    // Meta Pixel — InitiateCheckout
-    if (typeof fbq === 'function') {
-      fbq('track', 'InitiateCheckout', {
-        content_name: 'PUMA Dragon Edition',
-        content_category: 'Sneakers',
-        num_items: 1,
-      });
-    }
+    this.trackPixelEvent('InitiateCheckout', {
+      content_name: 'PUMA Dragon Edition',
+      content_category: 'Sneakers',
+      num_items: 1,
+    });
 
-    // Focus management
-    setTimeout(function () {
-      const firstInput = leadForm.querySelector('input:not([type="hidden"])');
-      if (firstInput) firstInput.focus();
+    // Focus management for accessibility
+    setTimeout(() => {
+      const firstInput = leadForm?.querySelector('input:not([type="hidden"])');
+      firstInput?.focus();
     }, 400);
   }
 
-  // ─── CLOSE MODAL ───────────────────────────────────────────
-  function closeModal() {
+  /**
+   * Closes the lead capture modal with animation.
+   */
+  closeModal() {
+    const { modalOverlay } = this.elements;
+    
     modalOverlay.classList.remove('entering');
     modalOverlay.classList.add('leaving');
-    setTimeout(function () {
+    
+    setTimeout(() => {
       modalOverlay.hidden = true;
       modalOverlay.classList.remove('leaving');
-      document.body.style.overflow = '';
+      document.body.style.overflow = ''; // Restore scrolling
     }, 260);
   }
 
-  btnQuiero.addEventListener('click', openModal);
-  modalClose.addEventListener('click', closeModal);
-
-  // Close on overlay click (outside modal card)
-  modalOverlay.addEventListener('click', function (e) {
-    if (e.target === modalOverlay) closeModal();
-  });
-
-  // Close on Escape
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && !modalOverlay.hidden) closeModal();
-  });
-
-  // ─── VALIDATION ────────────────────────────────────────────
-  function showError(field, msg) {
-    const el = document.getElementById('error-' + field);
-    const input = document.getElementById(field) || document.querySelector('[name="' + field + '"]');
-    if (el)    el.textContent = msg;
-    if (input) input.classList.add('has-error');
+  /**
+   * Displays an error message for a specific form field.
+   * @param {string} field - The field identifier.
+   * @param {string} msg - The error message to display.
+   */
+  showError(field, msg) {
+    const errorEl = document.getElementById(`error-${field}`);
+    const inputEl = document.getElementById(field) || document.querySelector(`[name="${field}"]`);
+    
+    if (errorEl) errorEl.textContent = msg;
+    if (inputEl) inputEl.classList.add('has-error');
   }
 
-  function clearError(field) {
-    const el = document.getElementById('error-' + field);
-    const input = document.getElementById(field) || document.querySelector('[name="' + field + '"]');
-    if (el)    el.textContent = '';
-    if (input) input.classList.remove('has-error');
+  /**
+   * Clears any existing error message for a specific form field.
+   * @param {string} field - The field identifier.
+   */
+  clearError(field) {
+    const errorEl = document.getElementById(`error-${field}`);
+    const inputEl = document.getElementById(field) || document.querySelector(`[name="${field}"]`);
+    
+    if (errorEl) errorEl.textContent = '';
+    if (inputEl) inputEl.classList.remove('has-error');
   }
 
-  function validateForm() {
-    let valid = true;
-    const nombre   = document.getElementById('nombre').value.trim();
-    const whatsapp = document.getElementById('whatsapp').value.trim();
-    const talla    = document.getElementById('talla').value;
+  /**
+   * Validates all form inputs.
+   * @returns {boolean} True if the form is valid, false otherwise.
+   */
+  validateForm() {
+    let isValid = true;
+    const nombre = this.elements.nombreInput.value.trim();
+    const whatsapp = this.elements.whatsappInput.value.trim();
+    const talla = this.elements.tallaInput.value;
     const delivery = document.querySelector('input[name="delivery"]:checked');
 
-    clearError('nombre');
-    clearError('whatsapp');
-    clearError('talla');
-    clearError('delivery');
+    // Reset previous errors
+    ['nombre', 'whatsapp', 'talla', 'delivery'].forEach(field => this.clearError(field));
 
     if (!nombre || nombre.length < 2) {
-      showError('nombre', 'Por favor ingresa tu nombre.');
-      valid = false;
+      this.showError('nombre', 'Por favor ingresa tu nombre.');
+      isValid = false;
     }
 
     const waClean = whatsapp.replace(/[\s\-()]/g, '');
     if (!waClean || waClean.length < 10) {
-      showError('whatsapp', 'Número de WhatsApp inválido.');
-      valid = false;
+      this.showError('whatsapp', 'Número de WhatsApp inválido.');
+      isValid = false;
     }
 
     if (!talla) {
-      showError('talla', 'Selecciona tu talla.');
-      valid = false;
+      this.showError('talla', 'Selecciona tu talla.');
+      isValid = false;
     }
 
     if (!delivery) {
-      showError('delivery', 'Elige un método de entrega.');
-      valid = false;
+      this.showError('delivery', 'Elige un método de entrega.');
+      isValid = false;
     }
 
-    return valid;
+    return isValid;
   }
 
-  // ─── FORM SUBMIT ───────────────────────────────────────────
-  leadForm.addEventListener('submit', function (e) {
+  /**
+   * Handles the form submission event.
+   * @param {Event} e - The submit event.
+   */
+  handleSubmit(e) {
     e.preventDefault();
 
-    if (!validateForm()) return;
+    if (!this.validateForm()) return;
 
-    const nombre   = document.getElementById('nombre').value.trim();
-    const whatsapp = document.getElementById('whatsapp').value.trim();
-    const talla    = document.getElementById('talla').value;
+    const { nombreInput, tallaInput, btnSubmit, formState, successState } = this.elements;
+    
+    const nombre = nombreInput.value.trim();
+    const talla = tallaInput.value;
     const delivery = document.querySelector('input[name="delivery"]:checked').value;
 
     // Disable button to prevent double-submit
     btnSubmit.disabled = true;
 
-    // ── Meta Pixel — Lead ──
-    if (typeof fbq === 'function') {
-      fbq('track', 'Lead', {
-        content_name: 'PUMA Dragon Edition',
-        content_category: 'Sneakers',
-        content_ids: ['puma-dragon-' + talla],
-        value: 1,
-        currency: 'USD',
-      });
-    }
+    // Track Meta Pixel Lead event
+    this.trackPixelEvent('Lead', {
+      content_name: 'PUMA Dragon Edition',
+      content_category: 'Sneakers',
+      content_ids: [`puma-dragon-${talla}`],
+      value: 1,
+      currency: 'USD',
+    });
 
-    // ── Show success ──
-    formState.hidden    = true;
+    // Show success state
+    formState.hidden = true;
     successState.hidden = false;
 
-    // ── Build WhatsApp message ──
+    this.redirectToWhatsApp(nombre, talla, delivery);
+  }
+
+  /**
+   * Prepares the message and redirects the user to WhatsApp.
+   * @param {string} nombre - User's name.
+   * @param {string} talla - Selected shoe size.
+   * @param {string} delivery - Selected delivery method.
+   */
+  redirectToWhatsApp(nombre, talla, delivery) {
     const msg = encodeURIComponent(
-      '¡Hola! 🐉 Quiero un par de *PUMA Dragon Edition*\n\n' +
-      '👤 Nombre: ' + nombre + '\n' +
-      '👟 Talla: ' + talla + '\n' +
-      '📍 Entrega: ' + delivery + '\n\n' +
-      '_Enviado desde la landing page_'
+      `¡Hola! 🐉 Quiero un par de *PUMA Dragon Edition*\n\n` +
+      `👤 Nombre: ${nombre}\n` +
+      `👟 Talla: ${talla}\n` +
+      `📍 Entrega: ${delivery}\n\n` +
+      `_Enviado desde la landing page_`
     );
 
-    // ── Redirect to WhatsApp after 2.6s ──
-    setTimeout(function () {
-      window.location.href = 'https://wa.me/' + WA_NUMBER + '?text=' + msg;
+    setTimeout(() => {
+      window.location.href = `https://wa.me/${this.config.waNumber}?text=${msg}`;
     }, 2600);
-  });
+  }
 
-  // ─── CLEAR ERRORS ON INPUT ─────────────────────────────────
-  document.getElementById('nombre').addEventListener('input', function () { clearError('nombre'); });
-  document.getElementById('whatsapp').addEventListener('input', function () { clearError('whatsapp'); });
-  document.querySelectorAll('input[name="delivery"]').forEach(function (radio) {
-    radio.addEventListener('change', function () { clearError('delivery'); });
-  });
+  /**
+   * Wrapper for Meta Pixel tracking to prevent undefined errors.
+   * @param {string} eventName - The standard or custom event name.
+   * @param {Object} payload - The event payload.
+   */
+  trackPixelEvent(eventName, payload) {
+    if (typeof fbq === 'function') {
+      fbq('track', eventName, payload);
+    }
+  }
+}
 
-})();
+// Initialize the application when the DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  new PumaLandingApp();
+});
