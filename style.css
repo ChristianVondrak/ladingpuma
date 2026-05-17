@@ -89,38 +89,39 @@ body {
 
 .cp {
   position: absolute;
-  border-radius: 50%;
-  background: var(--gold);
-  opacity: 0.05;
-  filter: blur(3px);
+  background-image: url('images/cloud.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.6;
   animation: drift linear infinite;
 }
 
 .cp1 {
-  width: 130px;
-  height: 55px;
-  top: 12%;
-  left: -8%;
-  animation-duration: 14s;
+  width: 300px;
+  height: 150px;
+  top: 10%;
+  left: -10%;
+  animation-duration: 25s;
 }
 
 .cp2 {
-  width: 80px;
-  height: 38px;
-  top: 28%;
-  right: -4%;
-  animation-duration: 18s;
-  animation-delay: -5s;
+  width: 300px;
+  height: 300px;
+  top: 35%;
+  right: -25%;
+  animation-duration: 30s;
+  animation-delay: -8s;
   animation-direction: reverse;
 }
 
 .cp3 {
-  width: 110px;
-  height: 48px;
-  bottom: 28%;
-  left: 5%;
-  animation-duration: 16s;
-  animation-delay: -9s;
+  width: 250px;
+  height: 125px;
+  bottom: 20%;
+  left: -5%;
+  animation-duration: 28s;
+  animation-delay: -12s;
 }
 
 @keyframes drift {
@@ -147,7 +148,7 @@ body {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 40px 24px 56px;
+  padding: 24px 24px 32px;
   max-width: 480px;
   width: 100%;
 }
@@ -166,7 +167,7 @@ body {
   letter-spacing: 4px;
   text-transform: uppercase;
   color: var(--gold);
-  margin-bottom: 22px;
+  margin-bottom: 10px;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   animation: fadeDown 0.8s var(--ease) both;
@@ -201,7 +202,8 @@ body {
   width: 100%;
   max-width: 550px;
   aspect-ratio: 1;
-  margin-bottom: 0px;
+  margin-top: -15px;
+  margin-bottom: -15px;
   animation: fadeUp 0.9s var(--ease) 0.1s both;
   pointer-events: none;
 }
@@ -286,8 +288,8 @@ body {
 
 /* --- HEADLINE --- */
 .headline-block {
-  margin-top: -6vh;
-  margin-bottom: 32px;
+  margin-top: -8vh;
+  margin-bottom: 20px;
   position: relative;
   z-index: 3;
   animation: fadeUp 0.9s var(--ease) 0.2s both;
@@ -295,7 +297,7 @@ body {
 
 .headline-main {
   font-family: var(--font-display);
-  font-size: clamp(3.2rem, 18vw, 5rem);
+  font-size: clamp(2.8rem, 16vw, 4.5rem);
   line-height: 0.9;
   letter-spacing: 4px;
   color: var(--white);
@@ -315,12 +317,12 @@ body {
 }
 
 .headline-sub {
-  margin-top: 14px;
-  font-size: 0.95rem;
+  margin-top: 6px;
+  font-size: 0.9rem;
   font-weight: 300;
   color: rgba(244, 244, 244, 0.75);
   letter-spacing: 1.5px;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 /* --- CTA CLOUD BUTTON --- */
@@ -328,7 +330,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
   animation: fadeUp 0.9s var(--ease) 0.35s both;
 }
 
@@ -343,6 +345,20 @@ body {
   background: transparent;
   outline: none;
   -webkit-tap-highlight-color: transparent;
+  animation: attentionPulse 3s infinite ease-in-out;
+}
+
+@keyframes attentionPulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+  }
 }
 
 .btn-inner {
@@ -391,6 +407,33 @@ body {
   text-transform: uppercase;
   color: rgba(244, 244, 244, 0.5);
   font-weight: 500;
+}
+
+/* --- RESPONSIVE HEIGHT SCALING --- */
+@media (min-height: 850px) {
+  .hero-content {
+    padding: 40px 24px 56px;
+  }
+  .brand-badge {
+    margin-bottom: 22px;
+  }
+  .shoe-stage {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  .headline-block {
+    margin-top: -6vh;
+    margin-bottom: 32px;
+  }
+  .headline-main {
+    font-size: clamp(3.2rem, 18vw, 5rem);
+  }
+  .headline-sub {
+    margin-top: 14px;
+  }
+  .cta-wrapper {
+    gap: 14px;
+  }
 }
 
 /* ============================================================
