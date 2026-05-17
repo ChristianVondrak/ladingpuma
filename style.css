@@ -431,23 +431,29 @@ body {
   .hero-content {
     padding: 40px 24px 56px;
   }
+
   .brand-badge {
     margin-bottom: 22px;
   }
+
   .shoe-stage {
     margin-top: 0;
     margin-bottom: 0;
   }
+
   .headline-block {
     margin-top: -6vh;
     margin-bottom: 32px;
   }
+
   .headline-main {
     font-size: clamp(3.2rem, 18vw, 5rem);
   }
+
   .headline-sub {
     margin-top: 14px;
   }
+
   .cta-wrapper {
     gap: 14px;
   }
@@ -952,7 +958,7 @@ body {
 
 @media (min-width: 992px) {
   .landing {
-    background-image: url('images/backgroun-desktop.jpeg');
+    background-image: url('images/backgroun-desktop.webp');
     background-position: center center;
   }
 
