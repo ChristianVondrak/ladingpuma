@@ -334,6 +334,23 @@ body {
   animation: fadeUp 0.9s var(--ease) 0.35s both;
 }
 
+.main-price {
+  font-family: var(--font-display);
+  font-size: 2.8rem;
+  color: var(--white);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8), var(--glow-red);
+  margin-bottom: -2px;
+  line-height: 1;
+  letter-spacing: 2px;
+}
+
+.main-price .currency {
+  font-size: 1.2rem;
+  color: var(--gold);
+  vertical-align: top;
+  margin-left: 2px;
+}
+
 .btn-cloud {
   position: relative;
   display: inline-flex;
@@ -577,6 +594,20 @@ body {
   font-size: 2rem;
   letter-spacing: 3px;
   color: var(--white);
+}
+
+.modal-price-badge {
+  display: inline-block;
+  background: rgba(196, 30, 58, 0.15);
+  border: 1px solid var(--crimson);
+  color: var(--gold-light);
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-top: 8px;
+  margin-bottom: 4px;
 }
 
 .modal-subtitle {
