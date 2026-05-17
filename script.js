@@ -21,8 +21,7 @@ class PumaLandingApp {
       sizesGrid: document.getElementById('sizes-grid'),
       btnSubmit: document.getElementById('btn-submit'),
       tallaInput: document.getElementById('talla'),
-      nombreInput: document.getElementById('nombre'),
-      whatsappInput: document.getElementById('whatsapp')
+      nombreInput: document.getElementById('nombre')
     };
 
     this.init();
@@ -40,7 +39,7 @@ class PumaLandingApp {
    * Binds all DOM events to their respective handlers.
    */
   bindEvents() {
-    const { btnQuiero, modalClose, modalOverlay, leadForm, nombreInput, whatsappInput } = this.elements;
+    const { btnQuiero, modalClose, modalOverlay, leadForm, nombreInput } = this.elements;
 
     btnQuiero?.addEventListener('click', () => this.openModal());
     modalClose?.addEventListener('click', () => this.closeModal());
@@ -60,7 +59,6 @@ class PumaLandingApp {
 
     // Clear errors on input
     nombreInput?.addEventListener('input', () => this.clearError('nombre'));
-    whatsappInput?.addEventListener('input', () => this.clearError('whatsapp'));
 
     document.querySelectorAll('input[name="delivery"]').forEach(radio => {
       radio.addEventListener('change', () => this.clearError('delivery'));
@@ -175,21 +173,14 @@ class PumaLandingApp {
   validateForm() {
     let isValid = true;
     const nombre = this.elements.nombreInput.value.trim();
-    const whatsapp = this.elements.whatsappInput.value.trim();
     const talla = this.elements.tallaInput.value;
     const delivery = document.querySelector('input[name="delivery"]:checked');
 
     // Reset previous errors
-    ['nombre', 'whatsapp', 'talla', 'delivery'].forEach(field => this.clearError(field));
+    ['nombre', 'talla', 'delivery'].forEach(field => this.clearError(field));
 
     if (!nombre || nombre.length < 2) {
       this.showError('nombre', 'Por favor ingresa tu nombre.');
-      isValid = false;
-    }
-
-    const waClean = whatsapp.replace(/[\s\-()]/g, '');
-    if (!waClean || waClean.length < 10) {
-      this.showError('whatsapp', 'Número de WhatsApp inválido.');
       isValid = false;
     }
 
@@ -248,11 +239,11 @@ class PumaLandingApp {
    */
   redirectToWhatsApp(nombre, talla, delivery) {
     const msg = encodeURIComponent(
-      `¡Hola! 🐉 Quiero un par de *PUMA Dragon Edition*\n\n` +
-      `👤 Nombre: ${nombre}\n` +
-      `👟 Talla: ${talla}\n` +
-      `📍 Entrega: ${delivery}\n\n` +
-      `_Enviado desde la landing page_`
+      `¡Hola! Quiero un par de *PUMA Dragon x Staple*\n\n` +
+      `- Nombre: ${nombre}\n` +
+      `- Talla: ${talla}\n` +
+      `- Entrega: ${delivery}\n\n` +
+      `_Este mensaje es de alta prioridad, te contactaremos enseguida._`
     );
 
     setTimeout(() => {
