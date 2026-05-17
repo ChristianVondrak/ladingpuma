@@ -7,8 +7,8 @@
 class PumaLandingApp {
   constructor() {
     this.config = {
-      waNumber: '584242374809', // ← Reemplaza con tu número (código país sin +)
-      sizes: [35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45]
+      waNumber: '584242374809',
+      sizes: [40, 41, 42, 43, 44, 45]
     };
 
     this.elements = {
