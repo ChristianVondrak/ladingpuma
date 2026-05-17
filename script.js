@@ -7,7 +7,7 @@
 class PumaLandingApp {
   constructor() {
     this.config = {
-      waNumber: '584XXXXXXXXX', // ← Reemplaza con tu número (código país sin +)
+      waNumber: '584242374809', // ← Reemplaza con tu número (código país sin +)
       sizes: [35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45]
     };
 
@@ -44,7 +44,7 @@ class PumaLandingApp {
 
     btnQuiero?.addEventListener('click', () => this.openModal());
     modalClose?.addEventListener('click', () => this.closeModal());
-    
+
     // Close on overlay click (outside modal card)
     modalOverlay?.addEventListener('click', (e) => {
       if (e.target === modalOverlay) this.closeModal();
@@ -61,7 +61,7 @@ class PumaLandingApp {
     // Clear errors on input
     nombreInput?.addEventListener('input', () => this.clearError('nombre'));
     whatsappInput?.addEventListener('input', () => this.clearError('whatsapp'));
-    
+
     document.querySelectorAll('input[name="delivery"]').forEach(radio => {
       radio.addEventListener('change', () => this.clearError('delivery'));
     });
@@ -72,7 +72,7 @@ class PumaLandingApp {
    */
   buildSizeButtons() {
     if (!this.elements.sizesGrid) return;
-    
+
     this.config.sizes.forEach(size => {
       const btn = document.createElement('button');
       btn.type = 'button';
@@ -80,7 +80,7 @@ class PumaLandingApp {
       btn.textContent = size;
       btn.dataset.size = size;
       btn.setAttribute('aria-label', `Talla ${size}`);
-      
+
       btn.addEventListener('click', () => this.selectSize(size, btn));
       this.elements.sizesGrid.appendChild(btn);
     });
@@ -96,11 +96,11 @@ class PumaLandingApp {
       b.classList.remove('active');
       b.setAttribute('aria-pressed', 'false');
     });
-    
+
     btn.classList.add('active');
     btn.setAttribute('aria-pressed', 'true');
     this.elements.tallaInput.value = size;
-    
+
     this.clearError('talla');
   }
 
@@ -109,7 +109,7 @@ class PumaLandingApp {
    */
   openModal() {
     const { modalOverlay, leadForm } = this.elements;
-    
+
     modalOverlay.hidden = false;
     modalOverlay.classList.add('entering');
     document.body.style.overflow = 'hidden'; // Prevent background scrolling
@@ -132,10 +132,10 @@ class PumaLandingApp {
    */
   closeModal() {
     const { modalOverlay } = this.elements;
-    
+
     modalOverlay.classList.remove('entering');
     modalOverlay.classList.add('leaving');
-    
+
     setTimeout(() => {
       modalOverlay.hidden = true;
       modalOverlay.classList.remove('leaving');
@@ -151,7 +151,7 @@ class PumaLandingApp {
   showError(field, msg) {
     const errorEl = document.getElementById(`error-${field}`);
     const inputEl = document.getElementById(field) || document.querySelector(`[name="${field}"]`);
-    
+
     if (errorEl) errorEl.textContent = msg;
     if (inputEl) inputEl.classList.add('has-error');
   }
@@ -163,7 +163,7 @@ class PumaLandingApp {
   clearError(field) {
     const errorEl = document.getElementById(`error-${field}`);
     const inputEl = document.getElementById(field) || document.querySelector(`[name="${field}"]`);
-    
+
     if (errorEl) errorEl.textContent = '';
     if (inputEl) inputEl.classList.remove('has-error');
   }
@@ -216,7 +216,7 @@ class PumaLandingApp {
     if (!this.validateForm()) return;
 
     const { nombreInput, tallaInput, btnSubmit, formState, successState } = this.elements;
-    
+
     const nombre = nombreInput.value.trim();
     const talla = tallaInput.value;
     const delivery = document.querySelector('input[name="delivery"]:checked').value;
