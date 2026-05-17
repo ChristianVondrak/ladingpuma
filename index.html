@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description"
+    content="PUMA Dragon Edition — Edición limitada disponible en Venezuela. Delivery Caracas, envíos MRW y ZOOM.">
+  <meta name="theme-color" content="#0A0A0A">
+  <title>PUMA Dragon Edition — Edición Limitada</title>
+
+  <!-- Open Graph para Meta Ads -->
+  <meta property="og:title" content="PUMA Dragon Edition — Edición Limitada">
+  <meta property="og:description" content="El espíritu del dragón. En tus pies. Pocas unidades disponibles.">
+  <meta property="og:image" content="shoes.png">
+  <meta property="og:type" content="website">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Meta Pixel -->
+  <script>
+    !function (f, b, e, v, n, t, s) {
+      if (f.fbq) return; n = f.fbq = function () {
+        n.callMethod ?
+          n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+      }; if (!f._fbq) f._fbq = n;
+      n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = []; t = b.createElement(e); t.async = !0;
+      t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s)
+    }(window,
+      document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', 'YOUR_PIXEL_ID');
+    fbq('track', 'PageView');
+    fbq('track', 'ViewContent', { content_name: 'PUMA Dragon Edition', content_category: 'Sneakers' });
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1" /></noscript>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- ========== LANDING ========== -->
+  <main class="landing" id="landing">
+
+    <!-- Floating cloud accents -->
+    <div class="cloud-particles" aria-hidden="true">
+      <div class="cp cp1"></div>
+      <div class="cp cp2"></div>
+      <div class="cp cp3"></div>
+    </div>
+
+    <div class="hero-content">
+
+      <!-- Badge -->
+      <div class="brand-badge">
+        <span class="badge-dot"></span>
+        Edición Limitada
+        <span class="badge-dot"></span>
+      </div>
+
+      <!-- Shoe -->
+      <div class="shoe-stage" aria-hidden="true">
+        <div class="shoe-glow"></div>
+        <img src="shoes.png" alt="PUMA Dragon Edition" class="shoe-img" id="shoe-img">
+        <div class="shoe-shadow"></div>
+      </div>
+
+      <!-- Headline -->
+      <div class="headline-block">
+        <h1 class="headline-main">PUMA <span class="headline-x">x</span> <span class="headline-accent">STAPLE</span>
+        </h1>
+        <p class="headline-sub">El espíritu del dragón.<br>En tus pies.</p>
+      </div>
+
+      <!-- CTA -->
+      <div class="cta-wrapper">
+        <button class="btn-cloud" id="btn-quiero">
+          <span class="btn-inner">
+            <svg class="cloud-svg cloud-left" viewBox="0 0 50 32" fill="none" aria-hidden="true">
+              <path d="M6,28 Q1,28 1,22 Q1,16 7,15 Q8,7 16,7 Q20,2 28,4 Q35,1 40,8 Q47,8 48,16 Q50,24 44,28 Z"
+                fill="#C9A84C" opacity="0.9" />
+            </svg>
+            QUIERO UN PAR
+            <svg class="cloud-svg cloud-right" viewBox="0 0 50 32" fill="none" aria-hidden="true">
+              <path d="M44,28 Q49,28 49,22 Q49,16 43,15 Q42,7 34,7 Q30,2 22,4 Q15,1 10,8 Q3,8 2,16 Q0,24 6,28 Z"
+                fill="#C9A84C" opacity="0.9" />
+            </svg>
+          </span>
+        </button>
+        <p class="stock-note">⚡ Pocas unidades disponibles</p>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ========== MODAL ========== -->
+  <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+    <div class="modal" id="modal">
+
+      <button class="modal-close" id="modal-close" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+
+      <!-- Form State -->
+      <div id="form-state">
+        <div class="modal-header">
+          <div class="modal-cloud-deco" aria-hidden="true">☁</div>
+          <h2 class="modal-title" id="modal-title">Asegura tu par</h2>
+          <p class="modal-subtitle">Completa los datos y te contactamos</p>
+        </div>
+
+        <form class="lead-form" id="lead-form" novalidate>
+
+          <div class="form-group">
+            <label for="nombre">Nombre completo *</label>
+            <input type="text" id="nombre" name="nombre" placeholder="¿Cómo te llaman?" autocomplete="name" required>
+            <span class="field-error" id="error-nombre"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="whatsapp">WhatsApp *</label>
+            <input type="tel" id="whatsapp" name="whatsapp" placeholder="04XX-XXXXXXX" autocomplete="tel" required>
+            <span class="field-error" id="error-whatsapp"></span>
+          </div>
+
+          <div class="form-group">
+            <label>Talla *</label>
+            <div class="sizes-grid" id="sizes-grid" role="group" aria-label="Selecciona tu talla"></div>
+            <input type="hidden" id="talla" name="talla">
+            <span class="field-error" id="error-talla"></span>
+          </div>
+
+          <div class="form-group">
+            <label>Método de entrega *</label>
+            <div class="delivery-grid">
+
+              <label class="delivery-card" for="del-caracas">
+                <input type="radio" id="del-caracas" name="delivery" value="Delivery Caracas" required>
+                <div class="delivery-inner">
+                  <span class="delivery-icon">🏙️</span>
+                  <span class="delivery-name">Delivery<br>Caracas</span>
+                </div>
+              </label>
+
+              <label class="delivery-card" for="del-mrw">
+                <input type="radio" id="del-mrw" name="delivery" value="Envío MRW">
+                <div class="delivery-inner">
+                  <span class="delivery-icon">📦</span>
+                  <span class="delivery-name">Envío<br>MRW</span>
+                </div>
+              </label>
+
+              <label class="delivery-card" for="del-zoom">
+                <input type="radio" id="del-zoom" name="delivery" value="Envío ZOOM">
+                <div class="delivery-inner">
+                  <span class="delivery-icon">🚀</span>
+                  <span class="delivery-name">Envío<br>ZOOM</span>
+                </div>
+              </label>
+
+            </div>
+            <span class="field-error" id="error-delivery"></span>
+          </div>
+
+          <button type="submit" class="btn-submit" id="btn-submit">
+            <span>CONFIRMAR PEDIDO</span>
+            <span class="btn-arrow">→</span>
+          </button>
+
+        </form>
+      </div>
+
+      <!-- Success State -->
+      <div class="success-state" id="success-state" hidden>
+        <div class="success-dragon" aria-hidden="true">🐉</div>
+        <h3>¡Pedido registrado!</h3>
+        <p>Te contactamos por WhatsApp en breve.<br>Redirigiendo...</p>
+        <div class="success-loader">
+          <div class="loader-bar"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
