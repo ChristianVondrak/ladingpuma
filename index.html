@@ -12,7 +12,7 @@
   <!-- Open Graph para Meta Ads -->
   <meta property="og:title" content="PUMA Dragon Edition — Edición Limitada">
   <meta property="og:description" content="El espíritu del dragón. En tus pies. Pocas unidades disponibles.">
-  <meta property="og:image" content="images/shoes.png">
+  <meta property="og:image" content="images/shoes.webp">
   <meta property="og:type" content="website">
 
   <!-- Google Fonts -->
@@ -20,6 +20,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap"
     rel="stylesheet">
+
+  <!-- Preload Critical Assets (LCP) -->
+  <link rel="preload" as="image" href="images/background.webp">
+  <link rel="preload" as="image" href="images/shoes.webp">
+  <link rel="preload" as="image" href="images/cloud.webp">
+
+  <!-- Scripts & Styles -->
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
 
   <!-- Meta Pixel Code -->
   <script>
@@ -42,7 +51,6 @@
       src="https://www.facebook.com/tr?id=1603545378444024&ev=PageView&noscript=1" /></noscript>
   <!-- End Meta Pixel Code -->
 
-  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -69,7 +77,7 @@
       <!-- Shoe -->
       <div class="shoe-stage" aria-hidden="true">
         <div class="shoe-glow"></div>
-        <img src="images/shoes.png" alt="PUMA Dragon Edition" class="shoe-img" id="shoe-img">
+        <img src="images/shoes.webp" alt="PUMA Dragon Edition" class="shoe-img" id="shoe-img">
         <div class="shoe-shadow"></div>
       </div>
 
@@ -182,7 +190,6 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
 </body>
 
 </html>

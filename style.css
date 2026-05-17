@@ -57,7 +57,7 @@ body {
   position: relative;
   min-height: 100dvh;
   width: 100%;
-  background-image: url('images/background.jpeg');
+  background-image: url('images/background.webp');
   background-size: cover;
   background-position: center top;
   display: flex;
@@ -89,7 +89,7 @@ body {
 
 .cp {
   position: absolute;
-  background-image: url('images/cloud.png');
+  background-image: url('images/cloud.webp');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
