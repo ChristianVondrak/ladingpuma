@@ -220,7 +220,7 @@ class PumaLandingApp {
       content_name: 'PUMA Dragon Edition',
       content_category: 'Sneakers',
       content_ids: [`puma-dragon-${talla}`],
-      value: 1,
+      value: 60,
       currency: 'USD',
     });
 
