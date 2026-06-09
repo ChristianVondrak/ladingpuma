@@ -108,22 +108,26 @@ class PumaLandingApp {
   openModal() {
     const { modalOverlay, leadForm } = this.elements;
 
+    // 1. Immediate UI update (paint the modal instantly)
     modalOverlay.hidden = false;
     modalOverlay.classList.add('entering');
     document.body.style.overflow = 'hidden'; // Prevent background scrolling
 
-    const eventId = this.generateEventId('InitiateCheckout');
-    const payload = {
-      content_name: 'PUMA Dragon Edition',
-      content_category: 'Sneakers',
-      num_items: 1,
-    };
+    // 2. Defer heavy tracking tasks so they don't block the paint (improves INP)
+    setTimeout(() => {
+      const eventId = this.generateEventId('InitiateCheckout');
+      const payload = {
+        content_name: 'PUMA Dragon Edition',
+        content_category: 'Sneakers',
+        num_items: 1,
+      };
 
-    // Track Pixel
-    this.trackPixelEvent('InitiateCheckout', payload, { eventID: eventId });
+      // Track Pixel
+      this.trackPixelEvent('InitiateCheckout', payload, { eventID: eventId });
 
-    // Track CAPI (Server-side)
-    this.trackServerEvent('InitiateCheckout', eventId, {}, payload);
+      // Track CAPI (Server-side)
+      this.trackServerEvent('InitiateCheckout', eventId, {}, payload);
+    }, 0);
 
     // Focus management for accessibility
     setTimeout(() => {
@@ -169,8 +173,13 @@ class PumaLandingApp {
     const errorEl = document.getElementById(`error-${field}`);
     const inputEl = document.getElementById(field) || document.querySelector(`[name="${field}"]`);
 
-    if (errorEl) errorEl.textContent = '';
-    if (inputEl) inputEl.classList.remove('has-error');
+    // Only modify DOM if there is actually an error (improves typing latency / INP)
+    if (errorEl && errorEl.textContent !== '') {
+      errorEl.textContent = '';
+    }
+    if (inputEl && inputEl.classList.contains('has-error')) {
+      inputEl.classList.remove('has-error');
+    }
   }
 
   /**
