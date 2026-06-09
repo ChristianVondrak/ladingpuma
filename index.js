@@ -1,6 +1,18 @@
-export async function onRequestPost(context) {
-  const { request, env } = context;
+export default {
+  async fetch(request, env, ctx) {
+    const url = new URL(request.url);
 
+    // 1. Intercept tracking API requests
+    if (url.pathname === "/api/track" && request.method === "POST") {
+      return await handleTrackRequest(request, env);
+    }
+
+    // 2. Fallback to static assets
+    return env.ASSETS.fetch(request);
+  }
+};
+
+async function handleTrackRequest(request, env) {
   // 1. Parse request body
   let body;
   try {
@@ -22,7 +34,6 @@ export async function onRequestPost(context) {
   }
 
   // 2. Obtain Pixel ID and Access Token
-  // Fallback to the provided token if env is not defined
   const PIXEL_ID = env.META_PIXEL_ID || '1603545378444024';
   const ACCESS_TOKEN = env.META_ACCESS_TOKEN || 'EAANfo0P1OA0BRneSoi2g4aZA0tN6T26V4Jfj9U8M9tUHHiCXH9lLv4asRMAptSo9Dq3tbIqKIy14eRBnAR7iBNleOhydJlIvyytDKQFKi8IVmegtvJoRTXVp5v0JPSHwbFblCI6ct3Vs4VUz1MrDH26gfqZB3XZAIg6Dl6STWFoOo1BEmwZCOohB5cZCvXMQWqQZDZD';
 
@@ -46,8 +57,8 @@ export async function onRequestPost(context) {
   const referer = request.headers.get("referer") || "";
   if (!fbc && referer) {
     try {
-      const url = new URL(referer);
-      const fbclid = url.searchParams.get("fbclid");
+      const urlRef = new URL(referer);
+      const fbclid = urlRef.searchParams.get("fbclid");
       if (fbclid) {
         fbc = `fb.1.${Date.now()}.${fbclid}`;
       }
