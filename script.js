@@ -112,11 +112,18 @@ class PumaLandingApp {
     modalOverlay.classList.add('entering');
     document.body.style.overflow = 'hidden'; // Prevent background scrolling
 
-    this.trackPixelEvent('InitiateCheckout', {
+    const eventId = this.generateEventId('InitiateCheckout');
+    const payload = {
       content_name: 'PUMA Dragon Edition',
       content_category: 'Sneakers',
       num_items: 1,
-    });
+    };
+
+    // Track Pixel
+    this.trackPixelEvent('InitiateCheckout', payload, { eventID: eventId });
+
+    // Track CAPI (Server-side)
+    this.trackServerEvent('InitiateCheckout', eventId, {}, payload);
 
     // Focus management for accessibility
     setTimeout(() => {
@@ -215,14 +222,23 @@ class PumaLandingApp {
     // Disable button to prevent double-submit
     btnSubmit.disabled = true;
 
-    // Track Meta Pixel Lead event
-    this.trackPixelEvent('Lead', {
+    const eventId = this.generateEventId('Lead');
+    const customData = {
       content_name: 'PUMA Dragon Edition',
       content_category: 'Sneakers',
       content_ids: [`puma-dragon-${talla}`],
       value: 60,
       currency: 'USD',
-    });
+    };
+    const userData = {
+      fn: nombre // Will be hashed securely on the server
+    };
+
+    // Track Pixel
+    this.trackPixelEvent('Lead', customData, { eventID: eventId });
+
+    // Track CAPI (Server-side)
+    this.trackServerEvent('Lead', eventId, userData, customData);
 
     // Show success state
     formState.hidden = true;
@@ -255,11 +271,52 @@ class PumaLandingApp {
    * Wrapper for Meta Pixel tracking to prevent undefined errors.
    * @param {string} eventName - The standard or custom event name.
    * @param {Object} payload - The event payload.
+   * @param {Object} [options] - Additional tracking options (like eventID).
    */
-  trackPixelEvent(eventName, payload) {
+  trackPixelEvent(eventName, payload, options = {}) {
     if (typeof fbq === 'function') {
-      fbq('track', eventName, payload);
+      fbq('track', eventName, payload, options);
     }
+  }
+
+  /**
+   * Generates a unique event ID for deduplication.
+   * @param {string} eventName - Name of the event.
+   * @returns {string} Unique event ID.
+   */
+  generateEventId(eventName) {
+    const randomStr = Math.random().toString(36).substring(2, 11);
+    return `${eventName.toLowerCase()}_${Date.now()}_${randomStr}`;
+  }
+
+  /**
+   * Sends tracking event to Cloudflare Pages API endpoint.
+   * @param {string} eventName - Name of the event.
+   * @param {string} eventId - Unique event ID.
+   * @param {Object} userData - Unhashed user details.
+   * @param {Object} customData - Event custom attributes.
+   */
+  trackServerEvent(eventName, eventId, userData = {}, customData = {}) {
+    fetch('/api/track', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        event_name: eventName,
+        event_id: eventId,
+        user_data: userData,
+        custom_data: customData
+      })
+    })
+    .then(response => {
+      if (!response.ok) {
+        console.warn(`[CAPI] Error forwarding event: ${response.statusText}`);
+      }
+    })
+    .catch(error => {
+      console.warn('[CAPI] Fetch error:', error);
+    });
   }
 }
 
