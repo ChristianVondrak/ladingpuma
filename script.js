@@ -120,6 +120,8 @@ class PumaLandingApp {
         content_name: 'PUMA Dragon Edition',
         content_category: 'Sneakers',
         num_items: 1,
+        value: 60,
+        currency: 'USD',
       };
 
       // Track Pixel
