@@ -11,6 +11,8 @@ class PumaLandingApp {
       sizes: [40, 41, 42, 43, 44, 45]
     };
 
+    this.hasInitiatedCheckout = false;
+
     this.elements = {
       btnQuiero: document.getElementById('btn-quiero'),
       modalOverlay: document.getElementById('modal-overlay'),
@@ -34,6 +36,23 @@ class PumaLandingApp {
   init() {
     this.buildSizeButtons();
     this.bindEvents();
+    this.trackInitialEvents();
+  }
+
+  /**
+   * Tracks PageView and ViewContent on load via both Pixel and CAPI.
+   */
+  trackInitialEvents() {
+    // PageView
+    const pvEventId = this.generateEventId('PageView');
+    this.trackPixelEvent('PageView', {}, { eventID: pvEventId });
+    this.trackServerEvent('PageView', pvEventId);
+
+    // ViewContent
+    const vcEventId = this.generateEventId('ViewContent');
+    const vcPayload = { content_name: 'PUMA Dragon Edition', content_category: 'Sneakers' };
+    this.trackPixelEvent('ViewContent', vcPayload, { eventID: vcEventId });
+    this.trackServerEvent('ViewContent', vcEventId, {}, vcPayload);
   }
 
   /**
@@ -126,20 +145,23 @@ class PumaLandingApp {
 
     // 2. Defer heavy tracking tasks so they don't block the paint (improves INP)
     setTimeout(() => {
-      const eventId = this.generateEventId('InitiateCheckout');
-      const payload = {
-        content_name: 'PUMA Dragon Edition',
-        content_category: 'Sneakers',
-        num_items: 1,
-        value: 60,
-        currency: 'USD',
-      };
+      if (!this.hasInitiatedCheckout) {
+        this.hasInitiatedCheckout = true;
+        const eventId = this.generateEventId('InitiateCheckout');
+        const payload = {
+          content_name: 'PUMA Dragon Edition',
+          content_category: 'Sneakers',
+          num_items: 1,
+          value: 60,
+          currency: 'USD',
+        };
 
-      // Track Pixel
-      this.trackPixelEvent('InitiateCheckout', payload, { eventID: eventId });
+        // Track Pixel
+        this.trackPixelEvent('InitiateCheckout', payload, { eventID: eventId });
 
-      // Track CAPI (Server-side)
-      this.trackServerEvent('InitiateCheckout', eventId, {}, payload);
+        // Track CAPI (Server-side)
+        this.trackServerEvent('InitiateCheckout', eventId, {}, payload);
+      }
     }, 0);
 
     // Focus management for accessibility
