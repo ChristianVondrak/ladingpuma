@@ -250,7 +250,7 @@ class PumaLandingApp {
     // Disable button to prevent double-submit
     btnSubmit.disabled = true;
 
-    const eventId = this.generateEventId('Lead');
+    const eventId = this.generateEventId('Purchase');
     const customData = {
       content_name: 'PUMA Dragon Edition',
       content_category: 'Sneakers',
@@ -289,8 +289,8 @@ class PumaLandingApp {
 
     setTimeout(() => {
       // Disparamos el Pixel y CAPI estrictamente aquí, junto a la redirección
-      this.trackPixelEvent('Lead', customData, { eventID: eventId });
-      this.trackServerEvent('Lead', eventId, userData, customData);
+      this.trackPixelEvent('Purchase', customData, { eventID: eventId });
+      this.trackServerEvent('Purchase', eventId, userData, customData);
 
       window.location.href = `https://wa.me/${this.config.waNumber}?text=${msg}`;
     }, 2600);
