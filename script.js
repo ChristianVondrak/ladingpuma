@@ -21,7 +21,8 @@ class PumaLandingApp {
       sizesGrid: document.getElementById('sizes-grid'),
       btnSubmit: document.getElementById('btn-submit'),
       tallaInput: document.getElementById('talla'),
-      nombreInput: document.getElementById('nombre')
+      nombreInput: document.getElementById('nombre'),
+      confirmacionInput: document.getElementById('confirmacion')
     };
 
     this.init();
@@ -62,6 +63,16 @@ class PumaLandingApp {
 
     document.querySelectorAll('input[name="delivery"]').forEach(radio => {
       radio.addEventListener('change', () => this.clearError('delivery'));
+    });
+
+    const { confirmacionInput, btnSubmit } = this.elements;
+    confirmacionInput?.addEventListener('change', () => {
+      if (confirmacionInput.checked) {
+        btnSubmit.disabled = false;
+        this.clearError('confirmacion');
+      } else {
+        btnSubmit.disabled = true;
+      }
     });
   }
 
@@ -193,9 +204,10 @@ class PumaLandingApp {
     const nombre = this.elements.nombreInput.value.trim();
     const talla = this.elements.tallaInput.value;
     const delivery = document.querySelector('input[name="delivery"]:checked');
+    const confirmacion = this.elements.confirmacionInput.checked;
 
     // Reset previous errors
-    ['nombre', 'talla', 'delivery'].forEach(field => this.clearError(field));
+    ['nombre', 'talla', 'delivery', 'confirmacion'].forEach(field => this.clearError(field));
 
     if (!nombre || nombre.length < 2) {
       this.showError('nombre', 'Por favor ingresa tu nombre.');
@@ -209,6 +221,11 @@ class PumaLandingApp {
 
     if (!delivery) {
       this.showError('delivery', 'Elige un método de entrega.');
+      isValid = false;
+    }
+
+    if (!confirmacion) {
+      this.showError('confirmacion', 'Debes confirmar tu intención de compra.');
       isValid = false;
     }
 
@@ -245,26 +262,23 @@ class PumaLandingApp {
       fn: nombre // Will be hashed securely on the server
     };
 
-    // Track Pixel
-    this.trackPixelEvent('Lead', customData, { eventID: eventId });
-
-    // Track CAPI (Server-side)
-    this.trackServerEvent('Lead', eventId, userData, customData);
-
     // Show success state
     formState.hidden = true;
     successState.hidden = false;
 
-    this.redirectToWhatsApp(nombre, talla, delivery);
+    this.redirectToWhatsApp(nombre, talla, delivery, eventId, userData, customData);
   }
 
   /**
-   * Prepares the message and redirects the user to WhatsApp.
+   * Prepares the message, fires the pixel strictly after validation, and redirects the user to WhatsApp.
    * @param {string} nombre - User's name.
    * @param {string} talla - Selected shoe size.
    * @param {string} delivery - Selected delivery method.
+   * @param {string} eventId - Unique event ID.
+   * @param {Object} userData - Unhashed user details.
+   * @param {Object} customData - Event custom attributes.
    */
-  redirectToWhatsApp(nombre, talla, delivery) {
+  redirectToWhatsApp(nombre, talla, delivery, eventId, userData, customData) {
     const msg = encodeURIComponent(
       `¡Hola! Quiero un par de *PUMA Dragon x Staple*\n\n` +
       `- Nombre: ${nombre}\n` +
@@ -274,6 +288,10 @@ class PumaLandingApp {
     );
 
     setTimeout(() => {
+      // Disparamos el Pixel y CAPI estrictamente aquí, junto a la redirección
+      this.trackPixelEvent('Lead', customData, { eventID: eventId });
+      this.trackServerEvent('Lead', eventId, userData, customData);
+
       window.location.href = `https://wa.me/${this.config.waNumber}?text=${msg}`;
     }, 2600);
   }

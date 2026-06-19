@@ -172,7 +172,15 @@
             <span class="field-error" id="error-delivery"></span>
           </div>
 
-          <button type="submit" class="btn-submit" id="btn-submit">
+          <div class="form-group">
+            <label for="confirmacion" style="display: flex; gap: 10px; align-items: start; cursor: pointer; font-size: 0.85rem; font-weight: 400; text-transform: none; line-height: 1.4;">
+              <input type="checkbox" id="confirmacion" name="confirmacion" style="margin-top: 3px; width: 16px; height: 16px; flex-shrink: 0;" required>
+              <span>Entiendo que el precio es de $59.99 USD y deseo coordinar mi pago y envío.</span>
+            </label>
+            <span class="field-error" id="error-confirmacion"></span>
+          </div>
+
+          <button type="submit" class="btn-submit" id="btn-submit" disabled>
             <span>CONFIRMAR PEDIDO</span>
             <span class="btn-arrow">→</span>
           </button>
